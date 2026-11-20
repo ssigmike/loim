@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Legyen Ön is milliomos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE  occasion: a quiz show, staged in a calm monochrome studio
+   IDEA   the show's money ladder and answer panels, printed in black and white
+   PICTURE the 15-rung ladder on the start screen; in play, the question card and four answer panels
+   COLOUR pure white ground, near-black ink, greys only; dark theme is the exact inverse
+   TYPE   Inter throughout, heavy and tightly tracked for figures and headlines
+   LAYOUT laptop: title column + ladder; game: play area + sticky ladder. phone: title, ladder, buttons; game: strip, question, answers */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#0a0a0a);--ink:light-dark(#0a0a0a,#f4f4f4);--mute:light-dark(#6e6e6e,#9b9b9b);--line:light-dark(#e7e7e7,#262626);--soft:light-dark(#f5f5f5,#151515);--glass:light-dark(rgba(255,255,255,.78),rgba(10,10,10,.78));--ease:cubic-bezier(.22,1,.36,1)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased;min-height:100svh;display:flex;flex-direction:column}
+button{font:inherit;color:inherit}
+.wrap{width:100%;max-width:1240px;margin:0 auto;padding-left:max(5vw,16px,env(safe-area-inset-left,0px));padding-right:max(5vw,16px,env(safe-area-inset-right,0px))}
+header{position:sticky;top:0;z-index:20;transition:background .4s var(--ease),border-color .4s var(--ease);border-bottom:1px solid transparent;padding-top:env(safe-area-inset-top,0px)}
+header.glass{background:var(--glass);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-color:var(--line)}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+.brand{background:none;border:0;padding:0;font-weight:700;letter-spacing:-.02em;font-size:17px;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:10px}
+.brand i{width:22px;height:22px;border-radius:50%;background:var(--ink);display:inline-block;position:relative}
+.brand i::after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--bg)}
+nav{display:flex;gap:4px}
+nav button{background:none;border:0;padding:10px 14px;border-radius:999px;cursor:pointer;font-size:15px;color:var(--mute);transition:color .3s,background .3s}
+nav button:hover,nav button.act{color:var(--ink);background:var(--soft)}
+body[data-v=game] nav{visibility:hidden}
+main{flex:1}
+.view{display:none}
+.view.on{display:block;animation:vin .7s var(--ease) both}
+@keyframes vin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.mask{display:block;overflow:hidden;padding-bottom:.06em}
+.mask>span{display:block;transform:translateY(105%);transition:transform 1s var(--ease);transition-delay:var(--d,0ms)}
+.view.in .mask>span{transform:none}
+h1 .mask>span{white-space:nowrap}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:14px;color:var(--mute);margin:0 0 22px}
+.eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--ink);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ink) 35%,transparent)}50%{box-shadow:0 0 0 7px transparent}}
+h1{font-size:clamp(44px,6.2vw,92px);line-height:.98;letter-spacing:-.045em;font-weight:800;margin:0}
+h2{font-size:clamp(32px,4.6vw,52px);line-height:1.05;letter-spacing:-.03em;font-weight:750;margin:0;text-wrap:balance}
+.lead{font-size:17px;color:var(--mute);max-width:34em;margin:24px 0 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 28px;border-radius:999px;border:1.5px solid var(--ink);background:var(--ink);color:var(--bg);font-weight:600;font-size:16px;cursor:pointer;transition:transform .35s var(--ease),background .3s,color .3s,opacity .3s}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:disabled{opacity:.35;cursor:default;transform:none}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.row{display:flex;flex-wrap:wrap;gap:12px}
+/* home */
+.home{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(32px,6vw,96px);align-items:center;padding-block:clamp(36px,7vh,88px)}
+.home .row{margin-top:36px}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:48px 0 0;padding:24px 0 0;border-top:1px solid var(--line)}
+.facts dt{font-size:13px;color:var(--mute)}
+.facts dd{margin:4px 0 0;font-weight:700;font-size:clamp(17px,2vw,22px);letter-spacing:-.02em;white-space:nowrap}
+.ladder{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.ladder li{display:grid;grid-template-columns:2.4em minmax(0,1fr) auto;align-items:center;gap:12px;padding:7px 16px;border-radius:12px;font-variant-numeric:tabular-nums;transition:background .6s var(--ease),color .6s var(--ease),transform .6s var(--ease);opacity:0;transform:translateX(16px);animation:rung .8s var(--ease) forwards;animation-delay:var(--d)}
+@keyframes rung{to{opacity:1;transform:none}}
+.ladder .n{color:var(--mute);font-size:14px}
+.ladder .v{font-weight:600;text-align:right;white-space:nowrap}
+.ladder .t{font-size:12px;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:1px 8px}
+.ladder li:not(.safe) .t,.ladder li.top .t{visibility:hidden}
+.side .ladder li.top .v{font-size:22px}
+.side .ladder li{padding:6px 12px}
+.ladder li.safe .v{font-weight:800}
+.ladder li.top .v{font-size:clamp(20px,2.4vw,30px);letter-spacing:-.03em;font-weight:800}
+.ladder li.done{color:var(--mute)}
+.ladder li.done .v{font-weight:500}
+.ladder li.cur{background:var(--ink);color:var(--bg);transform:scale(1.02)}
+.ladder li.cur .n,.ladder li.cur .t{color:var(--bg);border-color:color-mix(in srgb,var(--bg) 40%,transparent)}
+.lad-card{border:1px solid var(--line);border-radius:28px;padding:14px}
+/* level */
+.sec{padding-block:clamp(32px,6vh,72px)}
+.sec .lead{margin-top:14px}
+.lvgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px;margin-top:36px}
+.lvb{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:18px 18px 16px;border:1px solid var(--line);border-radius:20px;background:var(--bg);cursor:pointer;text-align:left;transition:background .35s var(--ease),color .35s var(--ease),transform .35s var(--ease),border-color .35s;opacity:0;animation:rise .7s var(--ease) forwards;animation-delay:var(--d)}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.lvb b{font-size:36px;letter-spacing:-.04em;line-height:1;font-weight:800}
+.lvb span{font-size:13px;color:var(--mute);transition:color .35s}
+.lvb:hover{background:var(--ink);color:var(--bg);border-color:var(--ink);transform:translateY(-3px)}
+.lvb:hover span{color:var(--bg)}
+.lvb:disabled{opacity:.3;cursor:default}
+.scale{display:flex;justify-content:space-between;font-size:13px;color:var(--mute);margin-top:12px}
+/* game */
+.gbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:18px;border-bottom:1px solid var(--line)}
+.gmeta{display:flex;gap:18px;flex-wrap:wrap;font-size:15px;color:var(--mute)}
+.gmeta b{color:var(--ink);font-weight:600}
+.clock{font-variant-numeric:tabular-nums}
+.xbtn{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:none;cursor:pointer;font-size:15px;transition:background .3s,border-color .3s}
+.xbtn:hover{background:var(--soft);border-color:var(--ink)}
+.ggrid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:clamp(24px,4vw,56px);padding-block:clamp(20px,4vh,44px)}
+.side{position:sticky;top:84px;align-self:start}
+.strip{display:none}
+.qcard{padding:clamp(4px,1vw,12px) 0 clamp(18px,3vh,32px)}
+.cat{display:inline-block;font-size:13px;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:3px 12px;margin-bottom:16px}
+#q{font-size:clamp(24px,3.4vw,40px);line-height:1.15;letter-spacing:-.025em;font-weight:700;margin:0;text-wrap:balance}
+.play.swap .qcard,.play.swap .ans{animation:rise .7s var(--ease) both;animation-delay:var(--d,0ms)}
+.answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ans{position:relative;overflow:hidden;display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:14px;min-height:72px;padding:12px 18px 12px 14px;border:1.5px solid var(--line);border-radius:20px;background:var(--bg);cursor:pointer;text-align:left;font-size:17px;font-weight:500;transition:border-color .3s,background .5s var(--ease),color .5s var(--ease),opacity .5s,transform .35s var(--ease)}
+.ans:hover:not(:disabled){border-color:var(--ink);transform:translateY(-2px)}
+.ans .lt{width:36px;height:36px;border-radius:50%;border:1.5px solid currentColor;display:grid;place-items:center;font-weight:700;font-size:15px;position:relative;z-index:1}
+.ans .tx{position:relative;z-index:1;overflow-wrap:anywhere}
+.ans .pc{position:relative;z-index:1;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ans .bar{position:absolute;left:0;bottom:0;height:5px;width:0;background:var(--ink);transition:width 1.2s var(--ease)}
+.ans.gone{opacity:.28;cursor:default}
+.answers.wait .ans{cursor:default}
+.answers.wait .ans:not(.locked):not(.ok){opacity:.45}
+.ans.locked{border-color:var(--ink);background:var(--soft);animation:lock 1s ease-in-out infinite}
+@keyframes lock{50%{border-color:var(--line)}}
+.ans.ok{background:var(--ink);color:var(--bg);border-color:var(--ink);opacity:1!important;animation:none;transform:scale(1.02)}
+.ans.ok .bar{background:var(--bg)}
+.ans.bad{animation:none;opacity:1!important;border-color:var(--ink);background:repeating-linear-gradient(-45deg,var(--soft) 0 8px,var(--bg) 8px 16px)}
+.ans.bad .tx{text-decoration:line-through;text-decoration-thickness:2px}
+.life{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;align-items:center}
+.lbtn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 20px;border-radius:999px;border:1.5px solid var(--ink);background:none;cursor:pointer;font-weight:600;font-size:15px;transition:background .3s,color .3s,opacity .3s}
+.lbtn:hover:not(:disabled){background:var(--ink);color:var(--bg)}
+.lbtn:disabled{opacity:.3;cursor:default;text-decoration:line-through}
+.lbtn kbd,.xbtn kbd{font:inherit;font-size:12px;color:var(--mute);border:1px solid var(--line);border-radius:6px;padding:0 6px}
+.msg{min-height:1.6em;margin:16px 0 0;font-weight:600;transition:opacity .4s}
+/* sheet */
+.sheet{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:color-mix(in srgb,var(--bg) 55%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .45s var(--ease)}
+.sheet.open{opacity:1;pointer-events:auto}
+.sh{width:min(460px,100%);background:var(--bg);border:1px solid var(--line);border-radius:28px;padding:28px;box-shadow:0 30px 80px -30px rgba(0,0,0,.35);transform:translateY(24px) scale(.98);transition:transform .55s var(--ease)}
+.sheet.open .sh{transform:none}
+.sh h3{font-size:28px;letter-spacing:-.03em;line-height:1.1;margin:0 0 18px}
+.sh p{color:var(--mute);margin:0 0 20px}
+.sh dl{margin:0 0 24px;display:grid;gap:10px}
+.sh dl div{display:flex;justify-content:space-between;gap:16px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.sh dt{color:var(--mute)}
+.sh dd{margin:0;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.sh .row>.btn{flex:1}
+/* result */
+.res{padding-block:clamp(36px,8vh,96px);display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(28px,5vw,80px);align-items:end}
+.big{font-size:clamp(48px,9vw,120px);line-height:.95;letter-spacing:-.05em;font-weight:800;margin:18px 0 0;white-space:nowrap}
+.big small{font-size:.35em;letter-spacing:-.02em;font-weight:700}
+.rmeta{display:flex;flex-wrap:wrap;gap:28px;margin-top:28px;color:var(--mute)}
+.rmeta b{display:block;color:var(--ink);font-size:20px;letter-spacing:-.02em}
+.save{border:1px solid var(--line);border-radius:28px;padding:24px}
+.save label{display:block;font-weight:600;margin-bottom:10px}
+.save input{width:100%;min-height:52px;font:inherit;font-size:16px;padding:0 18px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);transition:border-color .3s}
+.save input:focus{outline:none;border-color:var(--ink)}
+.save .row{margin-top:14px}
+.save .row>.btn{flex:1}
+.note{font-size:14px;color:var(--mute);margin:12px 0 0}
+/* board */
+.tbl{margin-top:32px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th{font-size:13px;font-weight:500;color:var(--mute);text-align:left;padding:10px 12px;border-bottom:1px solid var(--ink)}
+td{padding:16px 12px;border-bottom:1px solid var(--line)}
+td.r,th.r{text-align:right;white-space:nowrap}
+td.nm{font-weight:600;overflow-wrap:anywhere}
+td.rk{color:var(--mute);width:3em}
+tbody tr{opacity:0;animation:rise .6s var(--ease) forwards;animation-delay:var(--d)}
+tr.me td{background:var(--ink);color:var(--bg)}
+tr.me td.rk{color:var(--bg)}
+.empty{margin-top:32px;padding:48px 24px;border:1px dashed var(--line);border-radius:28px;text-align:center;color:var(--mute)}
+footer{border-top:1px solid var(--line);font-size:14px;color:var(--mute)}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-block:22px calc(22px + env(safe-area-inset-bottom,0px))}
+.err{margin-top:20px;font-weight:600}
+@media(max-width:860px){
+h1 .mask>span{white-space:normal}
+.home,.res{grid-template-columns:minmax(0,1fr)}
+.ggrid{grid-template-columns:minmax(0,1fr);padding-top:14px}
+.side{display:none}
+.strip{display:block;padding-top:14px}
+.ticks{display:grid;grid-template-columns:repeat(15,minmax(0,1fr));gap:3px}
+.ticks i{height:6px;border-radius:3px;background:var(--line);transition:background .6s var(--ease)}
+.ticks i.s{height:10px;margin-top:-2px}
+.ticks i.d{background:var(--mute)}
+.ticks i.c{background:var(--ink)}
+.stake{display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-size:14px;color:var(--mute)}
+.stake b{color:var(--ink);white-space:nowrap}
+}
+@media(max-width:600px){
+.hd{height:56px}
+.brand{font-size:15px}
+#navPlay{display:none}
+nav button{padding:10px 12px;font-size:14px}
+.facts dd{white-space:normal}
+.lbtn .lg{display:none}
+.answers{grid-template-columns:minmax(0,1fr);gap:8px}
+.ans{min-height:58px;font-size:16px;border-radius:16px;padding:8px 14px 8px 10px;gap:12px}
+.ans .lt{width:32px;height:32px}
+.ans{grid-template-columns:32px minmax(0,1fr) auto}
+.qcard{padding-bottom:16px}
+.gbar{padding-block:12px}
+.gmeta{gap:12px;font-size:14px}
+.life{margin-top:14px}
+.lbtn{flex:1;justify-content:center;padding:0 12px}
+.lbtn kbd,.xbtn kbd{display:none}
+.facts{gap:12px}
+.sheet{place-items:end center;padding:0}
+.sh{border-radius:28px 28px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));width:100%}
+.home .row>.btn{flex:1}
+th,td{padding:12px 6px}
+table{font-size:14px}
+.big{white-space:normal}
+}
+@media(prefers-reduced-motion:reduce){
+*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0ms!important;transition-duration:.01ms!important;transition-delay:0ms!important}
+}
+</style>
+</head>
+<body data-v="home">
+<header id="hdr">
+  <div class="wrap hd">
+    <button class="brand" id="toHome" aria-label="Főoldal"><i></i>Legyen Ön is milliomos!</button>
+    <nav>
+      <button id="navPlay">Új játék</button>
+      <button id="navBoard">Dicsőséglista</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="view on" id="v-home">
+    <div class="wrap home">
+      <div>
+        <p class="eyebrow"><i></i>Kvízjáték a böngészőben</p>
+        <h1><span class="mask"><span>Legyen Ön is</span></span><span class="mask"><span style="--d:120ms">milliomos!</span></span></h1>
+        <p class="lead">Tizenöt kérdés, egyre nagyobb tét. Az 5. és a 10. kérdés után a nyeremény már biztos, és minden helyes válasz után eldöntheti, hogy megáll vagy kockáztat.</p>
+        <div class="row">
+          <button class="btn" id="play" disabled>Kérdések betöltése…</button>
+          <button class="btn ghost" id="board">Dicsőséglista</button>
+        </div>
+        <p class="err" id="loadErr" hidden>A kérdéseket nem sikerült betölteni. Frissítse az oldalt.</p>
+        <dl class="facts">
+          <div><dt>Kérdések</dt><dd id="fQ">–</dd></div>
+          <div><dt>Nehézségi szint</dt><dd>13</dd></div>
+          <div><dt>Segítség</dt><dd>Közönség, felezés</dd></div>
+        </dl>
+      </div>
+      <div class="lad-card"><ol class="ladder" id="hl" aria-label="Nyereménylétra"></ol></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-level">
+    <div class="wrap sec">
+      <h2><span class="mask"><span>Válasszon nehézségi szintet</span></span></h2>
+      <p class="lead">Minden szinthez legalább 15 kérdés kell. A játékidő már most indul.</p>
+      <div class="lvgrid" id="lv"></div>
+      <div class="scale"><span>1 · legkönnyebb</span><span>13 · legnehezebb</span></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-game">
+    <div class="wrap">
+      <div class="gbar">
+        <div class="gmeta"><span>Szint <b id="gLv"></b></span><span><b id="gN"></b> / 15. kérdés</span><span class="clock" id="clock">00:00</span></div>
+        <button class="xbtn" id="exit">Kilépés <kbd>E</kbd></button>
+      </div>
+      <div class="strip"><div class="ticks" id="ticks"></div><div class="stake"><span>Tét: <b id="sNow"></b></span><span>Biztos: <b id="sSafe"></b></span></div></div>
+      <div class="ggrid">
+        <div class="play" id="play2">
+          <div class="qcard"><span class="cat" id="cat"></span><p id="q" role="heading" aria-level="2"></p></div>
+          <div class="answers" id="ans"></div>
+          <div class="life">
+            <button class="lbtn" id="lKoz">Közönség<span class="lg"> segítsége</span> <kbd>K</kbd></button>
+            <button class="lbtn" id="lFel">Felezés <kbd>F</kbd></button>
+          </div>
+          <p class="msg" id="msg" aria-live="polite"></p>
+        </div>
+        <aside class="side"><div class="lad-card"><ol class="ladder" id="gl"></ol></div></aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-result">
+    <div class="wrap res">
+      <div>
+        <h2><span class="mask"><span id="rTitle"></span></span></h2>
+        <p class="big" id="rPrize"></p>
+        <div class="rmeta" id="rMeta"></div>
+      </div>
+      <div>
+        <form class="save" id="saveForm" novalidate>
+          <label for="nev">Felveszi az eredményét a dicsőséglistára?</label>
+          <input id="nev" name="nev" maxlength="20" autocomplete="nickname" placeholder="Játékosnév">
+          <div class="row"><button type="button" class="btn ghost" id="noSave">Nem, köszönöm</button><button class="btn" type="submit">Felveszem</button></div>
+          <p class="note" id="saveNote">Legfeljebb 20 karakter. Az eredmény ebben a böngészőben marad.</p>
+        </form>
+        <div class="save" id="noPrize" hidden>
+          <p style="margin:0 0 16px">Nyeremény nélkül nem kerül fel a dicsőséglistára.</p>
+          <div class="row"><button class="btn ghost" id="rHome">Főmenü</button><button class="btn" id="rAgain">Új játék</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-board">
+    <div class="wrap sec">
+      <h2><span class="mask"><span>Dicsőséglista</span></span></h2>
+      <p class="lead">Nehézségi szint, nyeremény, végül játékidő szerint rendezve. Az eredményeket ez a böngésző tárolja.</p>
+      <div id="bl"></div>
+      <div class="row" style="margin-top:32px"><button class="btn" id="bPlay">Új játék</button><button class="btn ghost" id="bHome">Főmenü</button></div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap"><span>Legyen Ön is milliomos!</span><span>Eredetileg C-ben írt konzolos játék, böngészőre átírva</span></div></footer>
+
+<div class="sheet" id="sheet" aria-hidden="true"><div class="sh" role="dialog" aria-modal="true" id="shc"></div></div>
+
+<script>
+{
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const T=[10000,20000,50000,100000,250000,500000,750000,1000000,1500000,2000000,5000000,10000000,15000000,25000000,50000000];
+const N=15,L='ABCD',LS='loim-toplista';
+let Q=null,st={v:'home'},timers=[],tick=null,sheetMode=null;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ft=n=>n.toLocaleString('hu-HU')+' Ft';
+const rnd=n=>Math.floor(Math.random()*n);
+const biztos=h=>h<5?0:h<10?T[4]:T[9];
+const later=(f,ms)=>timers.push(setTimeout(f,ms));
+const clearT=()=>{timers.forEach(clearTimeout);timers=[]};
+const mmss=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+const cap=s=>s?s.charAt(0)+s.slice(1).toLocaleLowerCase('hu-HU'):'';
+const loadLB=()=>{try{return JSON.parse(localStorage.getItem(LS))||[]}catch(e){return []}};
+const saveLB=a=>{try{localStorage.setItem(LS,JSON.stringify(a));return true}catch(e){return false}};
+
+function ladder(cur){
+  let h='';
+  for(let i=N-1;i>=0;i--){
+    const c=[i===4||i===9||i===14?'safe':'',i===14?'top':'',i<cur?'done':'',i===cur?'cur':''].join(' ');
+    h+=`<li class="${c}" style="--d:${(N-1-i)*35}ms"><span class="n">${i+1}.</span><span class="v">${ft(T[i])}</span><span class="t">biztos</span></li>`;
+  }
+  return h;
+}
+function show(id){
+  $$('.view').forEach(v=>v.classList.remove('on','in'));
+  const v=$('#v-'+id);v.classList.add('on');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>v.classList.add('in')));
+  st.v=id;document.body.dataset.v=id;
+  $('#navPlay').classList.toggle('act',id==='level');
+  $('#navBoard').classList.toggle('act',id==='board');
+  window.scrollTo(0,0);
+}
+function goHome(){clearT();stopTick();closeSheet();st={v:'home'};$('#hl').innerHTML=ladder(-1);show('home')}
+
+/* nehézségi szint */
+function newGame(){
+  if(!Q)return;
+  clearT();stopTick();
+  st={v:'level',start:Date.now()};
+  $('#lv').innerHTML=Q.map((a,i)=>`<button class="lvb" data-lv="${i+1}" style="--d:${i*30}ms" ${a.length<N?'disabled':''}><b>${i+1}</b><span>${a.length.toLocaleString('hu-HU')} kérdés</span></button>`).join('');
+  show('level');
+}
+function startGame(lv){
+  const pool=Q[lv-1].map((_,i)=>i);
+  for(let i=pool.length-1;i>0;i--){const j=rnd(i+1);[pool[i],pool[j]]=[pool[j],pool[i]]}
+  Object.assign(st,{lv,qs:pool.slice(0,N),i:0,fel:true,koz:true});
+  newQ();show('game');startTick();
+}
+function startTick(){stopTick();const f=()=>{$('#clock').textContent=mmss(Math.floor((Date.now()-st.start)/1000))};f();tick=setInterval(f,1000)}
+function stopTick(){if(tick)clearInterval(tick);tick=null}
+
+/* kérdés */
+const cur=()=>Q[st.lv-1][st.qs[st.i]];
+function newQ(){Object.assign(st,{kert:false,most:false,lath:[1,1,1,1],es:[0,0,0,0],phase:'ask',pick:-1});msg('');renderQ(true)}
+function renderQ(anim){
+  const q=cur();
+  $('#gLv').textContent=st.lv;$('#gN').textContent=st.i+1;
+  $('#cat').textContent=cap(q[6]);$('#q').textContent=q[0];
+  $('#ans').className='answers';
+  $('#ans').innerHTML=[0,1,2,3].map(k=>{
+    const on=st.lath[k];
+    return `<button class="ans ${on?'':'gone'}" data-k="${k}" style="--d:${120+k*70}ms" ${on?'':'disabled'} aria-label="${L[k]} válasz"><span class="lt">${L[k]}</span><span class="tx">${on?esc(q[1+k]):'—'}</span><span class="pc">${st.most?st.es[k]+'%':''}</span><span class="bar" data-w="${st.most?st.es[k]:0}"></span></button>`;
+  }).join('');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>$$('.ans .bar').forEach(b=>b.style.width=b.dataset.w+'%')));
+  lifeState();
+  $('#gl').innerHTML=ladder(st.i);
+  $('#ticks').innerHTML=T.map((_,i)=>`<i class="${i===4||i===9||i===14?'s':''} ${i<st.i?'d':''} ${i===st.i?'c':''}"></i>`).join('');
+  $('#sNow').textContent=ft(T[st.i]);$('#sSafe').textContent=ft(biztos(st.i));
+  const p=$('#play2');
+  if(anim){p.classList.remove('swap');void p.offsetWidth;p.classList.add('swap')}else p.classList.remove('swap');
+}
+function lifeState(){
+  const busy=st.phase!=='ask';
+  $('#lKoz').disabled=busy||!st.koz||st.kert;
+  $('#lFel').disabled=busy||!st.fel||st.kert;
+}
+function msg(t){$('#msg').textContent=t}
+
+/* segítségek – az eredeti C algoritmusok */
+function kozonseg(){
+  const h=cur()[5],e=st.es;let sz=100;
+  if(rnd(100)<70){
+    const jo=rnd(25)+51;sz-=jo;
+    for(let i=0;i<2;i++){do{e[i]=sz-rnd(sz+1)}while(e[i]>=jo);sz-=e[i]}
+    e[2]=sz;e[3]=jo;const c=e[3];e[3]=e[h];e[h]=c;
+  }else{
+    for(let i=0;i<3;i++){e[i]=sz-rnd(sz+1);sz-=e[i]}
+    e[3]=sz;
+  }
+}
+function felezes(){
+  const h=cur()[5];let m=rnd(4);
+  while(m===h)m=rnd(4);
+  for(let i=0;i<4;i++)if(i!==m&&i!==h)st.lath[i]=0;
+}
+function useKoz(){
+  if(st.phase!=='ask')return;
+  if(!st.koz)return msg('A közönség csak egyszer segíthet!');
+  if(st.kert)return msg('Ennél a kérdésnél már kért segítséget!');
+  kozonseg();st.koz=false;st.kert=true;st.most=true;msg('');renderQ(false);
+}
+function useFel(){
+  if(st.phase!=='ask')return;
+  if(!st.fel)return msg('Már nincsen felezése!');
+  if(st.kert)return msg('Ennél a kérdésnél már kért segítséget!');
+  felezes();st.fel=false;st.kert=true;msg('');renderQ(false);
+}
+
+/* válasz */
+function answer(k){
+  if(st.phase!=='ask')return;
+  if(!st.lath[k])return msg('Ezt már kiejtettük!');
+  st.phase='locked';st.pick=k;lifeState();msg('');
+  const b=$$('.ans');$('#ans').classList.add('wait');b[k].classList.add('locked');
+  later(reveal,1300);
+}
+function reveal(){
+  const c=cur()[5],k=st.pick,b=$$('.ans');
+  b[k].classList.remove('locked');b[c].classList.add('ok');
+  if(k!==c)b[k].classList.add('bad');
+  st.phase='rev';
+  msg(k===c?'A válasza helyes!':`Sajnos a válasza helytelen. A helyes válasz: ${L[c]}`);
+  later(()=>{if(k===c){if(st.i===N-1)finish('win');else stopSheet()}else finish('wrong')},k===c?1100:1900);
+}
+function stopSheet(){
+  const i=st.i;
+  openSheet('stop',`<h3>Megáll vagy kockáztat?</h3><dl><div><dt>Ha most megáll</dt><dd>${ft(T[i])}</dd></div><div><dt>A következő kérdésnél</dt><dd>${ft(T[i+1])}</dd></div><div><dt>Biztosan hazaviszi</dt><dd>${ft(biztos(i+1))}</dd></div></dl><div class="row"><button class="btn ghost" id="shM">Megállok</button><button class="btn" id="shK">Kockáztatok</button></div>`);
+  $('#shM').onclick=doStop;$('#shK').onclick=doRisk;
+}
+function doStop(){closeSheet();st.prize=T[st.i];finish('stop')}
+function doRisk(){closeSheet();st.i++;later(newQ,250)}
+function askExit(){
+  openSheet('exit',`<h3>Kilép a főmenübe?</h3><p>A játék véget ér, az eredmény nem kerül mentésre.</p><div class="row"><button class="btn ghost" id="shC">Mégse</button><button class="btn" id="shX">Kilépés</button></div>`);
+  $('#shC').onclick=closeSheet;$('#shX').onclick=goHome;
+}
+function openSheet(mode,html){sheetMode=mode;$('#shc').innerHTML=html;const s=$('#sheet');s.classList.add('open');s.setAttribute('aria-hidden','false');later(()=>$('#shc .btn:last-child')?.focus(),60)}
+function closeSheet(){sheetMode=null;const s=$('#sheet');s.classList.remove('open');s.setAttribute('aria-hidden','true')}
+
+/* eredmény */
+function finish(kind){
+  stopTick();
+  st.secs=Math.floor((Date.now()-st.start)/1000);
+  if(kind==='win')st.prize=T[N-1];
+  if(kind==='wrong')st.prize=biztos(st.i);
+  const good=kind==='wrong'?st.i:st.i+1;
+  $('#rTitle').textContent={win:'Szívből gratulálok, Ön milliomos lett!',stop:'Gratulálunk! Ön nyert!',wrong:'Sajnos ez most nem jött össze.'}[kind];
+  $('#rPrize').innerHTML=st.prize.toLocaleString('hu-HU')+'<small> Ft</small>';
+  $('#rMeta').innerHTML=`<span>Szint<b>${st.lv}</b></span><span>Helyes válasz<b>${good} / 15</b></span><span>Játékidő<b>${mmss(st.secs)}</b></span>`;
+  const has=st.prize>0;
+  $('#saveForm').hidden=!has;$('#noPrize').hidden=has;
+  $('#nev').value='';$('#saveNote').textContent='Legfeljebb 20 karakter. Az eredmény ebben a böngészőben marad.';
+  show('result');
+  if(has&&matchMedia('(min-width:861px)').matches)later(()=>$('#nev').focus({preventScroll:true}),700);
+}
+function insert(list,u){
+  let idx=list.length;
+  for(let j=0;j<list.length;j++){
+    const c=list[j];let ahead;
+    if(c.lv!==u.lv)ahead=c.lv<u.lv;
+    else if(c.p!==u.p)ahead=c.p<u.p;
+    else if(c.m!==u.m)ahead=c.m>u.m;
+    else ahead=c.s>u.s;
+    if(ahead){idx=j;break}
+  }
+  list.splice(idx,0,u);return idx;
+}
+function save(e){
+  e.preventDefault();
+  const n=$('#nev').value.trim().slice(0,20);
+  if(!n){$('#saveNote').textContent='Adjon meg egy játékosnevet.';$('#nev').focus();return}
+  const list=loadLB();
+  const idx=insert(list,{n,lv:st.lv,m:Math.floor(st.secs/60),s:st.secs%60,p:st.prize});
+  const ok=saveLB(list);
+  renderBoard(list,idx,ok);show('board');
+}
+function renderBoard(list,hi=-1,ok=true){
+  list=list||loadLB();
+  if(!list.length){$('#bl').innerHTML='<div class="empty">A dicsőséglista még üres.</div>';return}
+  $('#bl').innerHTML=(ok?'':'<p class="err">Ez a böngésző nem engedi a mentést, az eredmény csak most látszik.</p>')+
+  `<div class="tbl"><table><thead><tr><th>#</th><th>Játékos</th><th class="r">Szint</th><th class="r">Idő</th><th class="r">Nyeremény</th></tr></thead><tbody>${
+    list.map((r,i)=>`<tr class="${i===hi?'me':''}" style="--d:${Math.min(i,20)*40}ms"><td class="rk">${i+1}.</td><td class="nm">${esc(r.n)}</td><td class="r">${r.lv}</td><td class="r">${mmss(r.m*60+r.s)}</td><td class="r"><b>${ft(r.p)}</b></td></tr>`).join('')
+  }</tbody></table></div>`;
+}
+function openBoard(){clearT();stopTick();st={v:'board'};renderBoard();show('board')}
+
+/* események */
+$('#play').onclick=newGame;$('#navPlay').onclick=newGame;$('#bPlay').onclick=newGame;$('#rAgain').onclick=newGame;
+$('#board').onclick=openBoard;$('#navBoard').onclick=openBoard;
+$('#toHome').onclick=()=>{if(st.v==='game')askExit();else goHome()};
+$('#bHome').onclick=goHome;$('#rHome').onclick=goHome;$('#noSave').onclick=goHome;
+$('#lv').onclick=e=>{const b=e.target.closest('.lvb');if(b&&!b.disabled)startGame(+b.dataset.lv)};
+$('#ans').onclick=e=>{const b=e.target.closest('.ans');if(b)answer(+b.dataset.k)};
+$('#lKoz').onclick=useKoz;$('#lFel').onclick=useFel;$('#exit').onclick=askExit;
+$('#saveForm').onsubmit=save;
+$('#sheet').onclick=e=>{if(e.target.id==='sheet'&&sheetMode==='exit')closeSheet()};
+document.addEventListener('keydown',e=>{
+  if(e.target.closest('input')||e.metaKey||e.ctrlKey||e.altKey)return;
+  const k=e.key.toUpperCase();
+  if(sheetMode==='stop'){if(k==='M')doStop();else if(k==='K')doRisk();return}
+  if(sheetMode==='exit'){if(k==='ESCAPE')closeSheet();return}
+  if(st.v!=='game')return;
+  const i=L.indexOf(k);
+  if(i>=0&&k.length===1)answer(i);else if(k==='K')useKoz();else if(k==='F')useFel();else if(k==='E')askExit();
+});
+const hdr=$('#hdr');const onS=()=>hdr.classList.toggle('glass',scrollY>8);addEventListener('scroll',onS,{passive:true});onS();
+$('#hl').innerHTML=ladder(-1);
+requestAnimationFrame(()=>requestAnimationFrame(()=>$('#v-home').classList.add('in')));
+
+window.claude?.hot?.snapshot?.(()=>st.v==='game'?{st:{...st,phase:'ask',pick:-1}}:{});
+function start(data){
+  fetch('kerdesek.json').then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{
+    Q=d;
+    const tot=Q.reduce((a,l)=>a+l.length,0);
+    $('#fQ').textContent=tot.toLocaleString('hu-HU');
+    const p=$('#play');p.disabled=false;p.textContent='Új játék';
+    const s=data&&data.st;
+    if(s&&s.v==='game'&&s.qs&&Q[s.lv-1]){st=s;renderQ(true);show('game');startTick()}
+  }).catch(()=>{$('#loadErr').hidden=false;$('#play').textContent='Nem elérhető'});
+}
+window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.hot?.data??{});
+}
+</script>
+</body>
+</html>
