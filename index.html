@@ -13,98 +13,116 @@
    PICTURE the 15-rung ladder on the start screen; in play, the question card and four answer panels
    COLOUR pure white ground, near-black ink, greys only; dark theme is the exact inverse
    TYPE   Inter throughout, heavy and tightly tracked for figures and headlines
-   LAYOUT laptop: title column + ladder; game: play area + sticky ladder. phone: title, ladder, buttons; game: strip, question, answers */
-:root{color-scheme:light dark;--bg:light-dark(#ffffff,#0a0a0a);--ink:light-dark(#0a0a0a,#f4f4f4);--mute:light-dark(#6e6e6e,#9b9b9b);--line:light-dark(#e7e7e7,#262626);--soft:light-dark(#f5f5f5,#151515);--glass:light-dark(rgba(255,255,255,.78),rgba(10,10,10,.78));--ease:cubic-bezier(.22,1,.36,1)}
+   LAYOUT mobile first: title, buttons, ladder; game: strip, question, answers. 601px+: two-column answers. 861px+: title + ladder, play + sticky ladder */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#0a0a0a);--ink:light-dark(#0a0a0a,#f4f4f4);--mute:light-dark(#6e6e6e,#9b9b9b);--line:light-dark(#e7e7e7,#262626);--soft:light-dark(#f5f5f5,#151515);--glass:light-dark(rgba(255,255,255,.8),rgba(10,10,10,.8));--ease:cubic-bezier(.22,1,.36,1)}
 :root[data-theme=light]{color-scheme:light}
 :root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased;min-height:100svh;display:flex;flex-direction:column}
-button{font:inherit;color:inherit}
+button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
 .wrap{width:100%;max-width:1240px;margin:0 auto;padding-left:max(5vw,16px,env(safe-area-inset-left,0px));padding-right:max(5vw,16px,env(safe-area-inset-right,0px))}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+
+/* fejléc */
 header{position:sticky;top:0;z-index:20;transition:background .4s var(--ease),border-color .4s var(--ease);border-bottom:1px solid transparent;padding-top:env(safe-area-inset-top,0px)}
 header.glass{background:var(--glass);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-color:var(--line)}
-.hd{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
-.brand{background:none;border:0;padding:0;font-weight:700;letter-spacing:-.02em;font-size:17px;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:10px}
-.brand i{width:22px;height:22px;border-radius:50%;background:var(--ink);display:inline-block;position:relative}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px}
+.brand{background:none;border:0;padding:0;font-weight:700;letter-spacing:-.02em;font-size:15px;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:10px}
+.brand i{width:22px;height:22px;border-radius:50%;background:var(--ink);display:inline-block;position:relative;flex:none}
 .brand i::after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--bg)}
 nav{display:flex;gap:4px}
-nav button{background:none;border:0;padding:10px 14px;border-radius:999px;cursor:pointer;font-size:15px;color:var(--mute);transition:color .3s,background .3s}
+nav button{background:none;border:0;padding:10px 12px;border-radius:999px;cursor:pointer;font-size:14px;color:var(--mute);transition:color .3s,background .3s;white-space:nowrap}
 nav button:hover,nav button.act{color:var(--ink);background:var(--soft)}
+#navPlay{display:none}
 body[data-v=game] nav{visibility:hidden}
 main{flex:1}
+
+/* nézetek, átmenetek */
 .view{display:none}
 .view.on{display:block;animation:vin .7s var(--ease) both}
 @keyframes vin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.mask{display:block;overflow:hidden;padding-bottom:.06em}
-.mask>span{display:block;transform:translateY(105%);transition:transform 1s var(--ease);transition-delay:var(--d,0ms)}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.mask{display:block;overflow:hidden;padding:.22em 0 .1em;margin:-.22em 0 -.1em}
+.mask>span{display:block;transform:translateY(110%);transition:transform 1s var(--ease);transition-delay:var(--d,0ms)}
 .view.in .mask>span{transform:none}
-h1 .mask>span{white-space:nowrap}
-.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:14px;color:var(--mute);margin:0 0 22px}
+
+/* tipográfia, gombok */
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:14px;color:var(--mute);margin:0 0 18px}
 .eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--ink);animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ink) 35%,transparent)}50%{box-shadow:0 0 0 7px transparent}}
-h1{font-size:clamp(44px,6.2vw,92px);line-height:.98;letter-spacing:-.045em;font-weight:800;margin:0}
-h2{font-size:clamp(32px,4.6vw,52px);line-height:1.05;letter-spacing:-.03em;font-weight:750;margin:0;text-wrap:balance}
-.lead{font-size:17px;color:var(--mute);max-width:34em;margin:24px 0 0}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 28px;border-radius:999px;border:1.5px solid var(--ink);background:var(--ink);color:var(--bg);font-weight:600;font-size:16px;cursor:pointer;transition:transform .35s var(--ease),background .3s,color .3s,opacity .3s}
+h1{font-size:clamp(42px,11.5vw,92px);line-height:1.02;letter-spacing:-.045em;font-weight:800;margin:0}
+h2{font-size:clamp(30px,8vw,52px);line-height:1.05;letter-spacing:-.03em;font-weight:750;margin:0;text-wrap:balance}
+.lead{font-size:16px;color:var(--mute);max-width:34em;margin:18px 0 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border-radius:999px;border:1.5px solid var(--ink);background:var(--ink);color:var(--bg);font-weight:600;font-size:16px;cursor:pointer;transition:transform .35s var(--ease),background .3s,color .3s,opacity .3s}
 .btn:hover{transform:translateY(-2px)}
-.btn:active{transform:translateY(0) scale(.98)}
+.btn:active{transform:scale(.98)}
 .btn.ghost{background:transparent;color:var(--ink)}
 .btn:disabled{opacity:.35;cursor:default;transform:none}
-:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-.row{display:flex;flex-wrap:wrap;gap:12px}
-/* home */
-.home{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(32px,6vw,96px);align-items:center;padding-block:clamp(36px,7vh,88px)}
-.home .row{margin-top:36px}
-.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:48px 0 0;padding:24px 0 0;border-top:1px solid var(--line)}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.row>.btn{flex:1}
+
+/* kezdőlap */
+.home{display:grid;grid-template-columns:minmax(0,1fr);gap:36px;padding-block:28px 40px}
+.home .row{margin-top:28px}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:36px 0 0;padding:20px 0 0;border-top:1px solid var(--line)}
 .facts dt{font-size:13px;color:var(--mute)}
-.facts dd{margin:4px 0 0;font-weight:700;font-size:clamp(17px,2vw,22px);letter-spacing:-.02em;white-space:nowrap}
+.facts dd{margin:4px 0 0;font-weight:700;font-size:17px;letter-spacing:-.02em}
+
+/* nyereménylétra */
+.lad-card{border:1px solid var(--line);border-radius:24px;padding:10px}
 .ladder{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
-.ladder li{display:grid;grid-template-columns:2.4em minmax(0,1fr) auto;align-items:center;gap:12px;padding:7px 16px;border-radius:12px;font-variant-numeric:tabular-nums;transition:background .6s var(--ease),color .6s var(--ease),transform .6s var(--ease);opacity:0;transform:translateX(16px);animation:rung .8s var(--ease) forwards;animation-delay:var(--d)}
+.ladder li{display:grid;grid-template-columns:2.2em minmax(0,1fr) auto;align-items:center;gap:10px;padding:6px 12px;border-radius:12px;font-variant-numeric:tabular-nums;transition:background .6s var(--ease),color .6s var(--ease),transform .6s var(--ease);opacity:0;transform:translateX(16px);animation:rung .8s var(--ease) forwards;animation-delay:var(--d)}
 @keyframes rung{to{opacity:1;transform:none}}
 .ladder .n{color:var(--mute);font-size:14px}
 .ladder .v{font-weight:600;text-align:right;white-space:nowrap}
 .ladder .t{font-size:12px;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:1px 8px}
 .ladder li:not(.safe) .t,.ladder li.top .t{visibility:hidden}
-.side .ladder li.top .v{font-size:22px}
-.side .ladder li{padding:6px 12px}
 .ladder li.safe .v{font-weight:800}
-.ladder li.top .v{font-size:clamp(20px,2.4vw,30px);letter-spacing:-.03em;font-weight:800}
+.ladder li.top .v{font-size:22px;letter-spacing:-.03em;font-weight:800}
 .ladder li.done{color:var(--mute)}
 .ladder li.done .v{font-weight:500}
 .ladder li.cur{background:var(--ink);color:var(--bg);transform:scale(1.02)}
 .ladder li.cur .n,.ladder li.cur .t{color:var(--bg);border-color:color-mix(in srgb,var(--bg) 40%,transparent)}
-.lad-card{border:1px solid var(--line);border-radius:28px;padding:14px}
-/* level */
-.sec{padding-block:clamp(32px,6vh,72px)}
-.sec .lead{margin-top:14px}
-.lvgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px;margin-top:36px}
-.lvb{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:18px 18px 16px;border:1px solid var(--line);border-radius:20px;background:var(--bg);cursor:pointer;text-align:left;transition:background .35s var(--ease),color .35s var(--ease),transform .35s var(--ease),border-color .35s;opacity:0;animation:rise .7s var(--ease) forwards;animation-delay:var(--d)}
-@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.lvb b{font-size:36px;letter-spacing:-.04em;line-height:1;font-weight:800}
+
+/* szintválasztó */
+.sec{padding-block:28px 48px}
+.sec .lead{margin-top:12px}
+.lvgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-top:28px}
+.lvb{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:14px 14px 12px;border:1px solid var(--line);border-radius:18px;background:var(--bg);cursor:pointer;text-align:left;transition:background .35s var(--ease),color .35s var(--ease),transform .35s var(--ease),border-color .35s;opacity:0;animation:rise .7s var(--ease) forwards;animation-delay:var(--d)}
+.lvb b{font-size:32px;letter-spacing:-.04em;line-height:1;font-weight:800}
 .lvb span{font-size:13px;color:var(--mute);transition:color .35s}
 .lvb:hover{background:var(--ink);color:var(--bg);border-color:var(--ink);transform:translateY(-3px)}
 .lvb:hover span{color:var(--bg)}
 .lvb:disabled{opacity:.3;cursor:default}
-.scale{display:flex;justify-content:space-between;font-size:13px;color:var(--mute);margin-top:12px}
-/* game */
-.gbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:18px;border-bottom:1px solid var(--line)}
-.gmeta{display:flex;gap:18px;flex-wrap:wrap;font-size:15px;color:var(--mute)}
+.scale{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--mute);margin-top:12px}
+
+/* játék */
+.gbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px;border-bottom:1px solid var(--line)}
+.gmeta{display:flex;gap:12px;flex-wrap:wrap;font-size:14px;color:var(--mute)}
 .gmeta b{color:var(--ink);font-weight:600}
 .clock{font-variant-numeric:tabular-nums}
 .xbtn{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:none;cursor:pointer;font-size:15px;transition:background .3s,border-color .3s}
 .xbtn:hover{background:var(--soft);border-color:var(--ink)}
-.ggrid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:clamp(24px,4vw,56px);padding-block:clamp(20px,4vh,44px)}
-.side{position:sticky;top:84px;align-self:start}
-.strip{display:none}
-.qcard{padding:clamp(4px,1vw,12px) 0 clamp(18px,3vh,32px)}
-.cat{display:inline-block;font-size:13px;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:3px 12px;margin-bottom:16px}
-#q{font-size:clamp(24px,3.4vw,40px);line-height:1.15;letter-spacing:-.025em;font-weight:700;margin:0;text-wrap:balance}
+kbd{display:none;font:inherit;font-size:12px;color:var(--mute);border:1px solid var(--line);border-radius:6px;padding:0 6px}
+.strip{padding-top:14px}
+.ticks{display:grid;grid-template-columns:repeat(15,minmax(0,1fr));gap:3px}
+.ticks i{height:6px;border-radius:3px;background:var(--line);transition:background .6s var(--ease)}
+.ticks i.s{height:10px;margin-top:-2px}
+.ticks i.d{background:var(--mute)}
+.ticks i.c{background:var(--ink)}
+.stake{display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-size:14px;color:var(--mute)}
+.stake b{color:var(--ink);white-space:nowrap}
+.ggrid{display:grid;grid-template-columns:minmax(0,1fr);gap:40px;padding-block:14px 32px}
+.side{display:none}
+.qcard{padding:0 0 16px}
+.cat{display:inline-block;font-size:13px;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:3px 12px;margin-bottom:12px}
+#q{font-size:clamp(22px,6vw,40px);line-height:1.18;letter-spacing:-.025em;font-weight:700;margin:0;text-wrap:balance}
 .play.swap .qcard,.play.swap .ans{animation:rise .7s var(--ease) both;animation-delay:var(--d,0ms)}
-.answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.ans{position:relative;overflow:hidden;display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:14px;min-height:72px;padding:12px 18px 12px 14px;border:1.5px solid var(--line);border-radius:20px;background:var(--bg);cursor:pointer;text-align:left;font-size:17px;font-weight:500;transition:border-color .3s,background .5s var(--ease),color .5s var(--ease),opacity .5s,transform .35s var(--ease)}
-.ans:hover:not(:disabled){border-color:var(--ink);transform:translateY(-2px)}
-.ans .lt{width:36px;height:36px;border-radius:50%;border:1.5px solid currentColor;display:grid;place-items:center;font-weight:700;font-size:15px;position:relative;z-index:1}
+.answers{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+.ans{position:relative;overflow:hidden;display:grid;grid-template-columns:32px minmax(0,1fr) auto;align-items:center;gap:12px;min-height:58px;padding:8px 14px 8px 10px;border:1.5px solid var(--line);border-radius:16px;background:var(--bg);cursor:pointer;text-align:left;font-size:16px;font-weight:500;transition:border-color .3s,background .5s var(--ease),color .5s var(--ease),opacity .5s,transform .35s var(--ease)}
+.ans:hover:not(:disabled){border-color:var(--ink)}
+.ans .lt{width:32px;height:32px;border-radius:50%;border:1.5px solid currentColor;display:grid;place-items:center;font-weight:700;font-size:15px;position:relative;z-index:1}
 .ans .tx{position:relative;z-index:1;overflow-wrap:anywhere}
 .ans .pc{position:relative;z-index:1;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
 .ans .bar{position:absolute;left:0;bottom:0;height:5px;width:0;background:var(--ink);transition:width 1.2s var(--ease)}
@@ -117,90 +135,112 @@ h2{font-size:clamp(32px,4.6vw,52px);line-height:1.05;letter-spacing:-.03em;font-
 .ans.ok .bar{background:var(--bg)}
 .ans.bad{animation:none;opacity:1!important;border-color:var(--ink);background:repeating-linear-gradient(-45deg,var(--soft) 0 8px,var(--bg) 8px 16px)}
 .ans.bad .tx{text-decoration:line-through;text-decoration-thickness:2px}
-.life{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;align-items:center}
-.lbtn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 20px;border-radius:999px;border:1.5px solid var(--ink);background:none;cursor:pointer;font-weight:600;font-size:15px;transition:background .3s,color .3s,opacity .3s}
+.life{display:flex;gap:10px;margin-top:14px}
+.lbtn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 12px;border-radius:999px;border:1.5px solid var(--ink);background:none;cursor:pointer;font-weight:600;font-size:15px;transition:background .3s,color .3s,opacity .3s}
 .lbtn:hover:not(:disabled){background:var(--ink);color:var(--bg)}
 .lbtn:disabled{opacity:.3;cursor:default;text-decoration:line-through}
-.lbtn kbd,.xbtn kbd{font:inherit;font-size:12px;color:var(--mute);border:1px solid var(--line);border-radius:6px;padding:0 6px}
-.msg{min-height:1.6em;margin:16px 0 0;font-weight:600;transition:opacity .4s}
-/* sheet */
-.sheet{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:color-mix(in srgb,var(--bg) 55%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .45s var(--ease)}
+.lbtn .lg{display:none}
+.msg{min-height:1.6em;margin:14px 0 0;font-weight:600}
+
+/* felugró ablak: telefonon alulról */
+.sheet{position:fixed;inset:0;z-index:50;display:grid;place-items:end center;background:color-mix(in srgb,var(--bg) 55%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .45s var(--ease)}
 .sheet.open{opacity:1;pointer-events:auto}
-.sh{width:min(460px,100%);background:var(--bg);border:1px solid var(--line);border-radius:28px;padding:28px;box-shadow:0 30px 80px -30px rgba(0,0,0,.35);transform:translateY(24px) scale(.98);transition:transform .55s var(--ease)}
+.sh{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:28px 28px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 30px 80px -30px rgba(0,0,0,.35);transform:translateY(40px);transition:transform .55s var(--ease)}
 .sheet.open .sh{transform:none}
-.sh h3{font-size:28px;letter-spacing:-.03em;line-height:1.1;margin:0 0 18px}
+.sh h3{font-size:26px;letter-spacing:-.03em;line-height:1.1;margin:0 0 16px}
 .sh p{color:var(--mute);margin:0 0 20px}
-.sh dl{margin:0 0 24px;display:grid;gap:10px}
+.sh dl{margin:0 0 22px;display:grid;gap:10px}
 .sh dl div{display:flex;justify-content:space-between;gap:16px;padding-bottom:10px;border-bottom:1px solid var(--line)}
 .sh dt{color:var(--mute)}
 .sh dd{margin:0;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
-.sh .row>.btn{flex:1}
-/* result */
-.res{padding-block:clamp(36px,8vh,96px);display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(28px,5vw,80px);align-items:end}
-.big{font-size:clamp(48px,9vw,120px);line-height:.95;letter-spacing:-.05em;font-weight:800;margin:18px 0 0;white-space:nowrap}
+
+/* eredmény */
+.res{padding-block:28px 48px;display:grid;grid-template-columns:minmax(0,1fr);gap:32px}
+.big{font-size:clamp(46px,13vw,120px);line-height:.95;letter-spacing:-.05em;font-weight:800;margin:16px 0 0}
 .big small{font-size:.35em;letter-spacing:-.02em;font-weight:700}
-.rmeta{display:flex;flex-wrap:wrap;gap:28px;margin-top:28px;color:var(--mute)}
+.rmeta{display:flex;flex-wrap:wrap;gap:24px;margin-top:24px;color:var(--mute)}
 .rmeta b{display:block;color:var(--ink);font-size:20px;letter-spacing:-.02em}
-.save{border:1px solid var(--line);border-radius:28px;padding:24px}
+.save{border:1px solid var(--line);border-radius:24px;padding:20px}
 .save label{display:block;font-weight:600;margin-bottom:10px}
 .save input{width:100%;min-height:52px;font:inherit;font-size:16px;padding:0 18px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);transition:border-color .3s}
 .save input:focus{outline:none;border-color:var(--ink)}
 .save .row{margin-top:14px}
-.save .row>.btn{flex:1}
 .note{font-size:14px;color:var(--mute);margin:12px 0 0}
-/* board */
-.tbl{margin-top:32px;overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
-th{font-size:13px;font-weight:500;color:var(--mute);text-align:left;padding:10px 12px;border-bottom:1px solid var(--ink)}
-td{padding:16px 12px;border-bottom:1px solid var(--line)}
+
+/* dicsőséglista */
+.tbl{margin-top:28px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px}
+th{font-size:13px;font-weight:500;color:var(--mute);text-align:left;padding:10px 6px;border-bottom:1px solid var(--ink)}
+td{padding:12px 6px;border-bottom:1px solid var(--line)}
 td.r,th.r{text-align:right;white-space:nowrap}
 td.nm{font-weight:600;overflow-wrap:anywhere}
-td.rk{color:var(--mute);width:3em}
+td.rk{color:var(--mute);width:2.6em}
 tbody tr{opacity:0;animation:rise .6s var(--ease) forwards;animation-delay:var(--d)}
 tr.me td{background:var(--ink);color:var(--bg)}
 tr.me td.rk{color:var(--bg)}
-.empty{margin-top:32px;padding:48px 24px;border:1px dashed var(--line);border-radius:28px;text-align:center;color:var(--mute)}
-footer{border-top:1px solid var(--line);font-size:14px;color:var(--mute)}
-footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-block:22px calc(22px + env(safe-area-inset-bottom,0px))}
+.empty{margin-top:28px;padding:40px 20px;border:1px dashed var(--line);border-radius:24px;text-align:center;color:var(--mute)}
 .err{margin-top:20px;font-weight:600}
-@media(max-width:860px){
-h1 .mask>span{white-space:normal}
-.home,.res{grid-template-columns:minmax(0,1fr)}
-.ggrid{grid-template-columns:minmax(0,1fr);padding-top:14px}
-.side{display:none}
-.strip{display:block;padding-top:14px}
-.ticks{display:grid;grid-template-columns:repeat(15,minmax(0,1fr));gap:3px}
-.ticks i{height:6px;border-radius:3px;background:var(--line);transition:background .6s var(--ease)}
-.ticks i.s{height:10px;margin-top:-2px}
-.ticks i.d{background:var(--mute)}
-.ticks i.c{background:var(--ink)}
-.stake{display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-size:14px;color:var(--mute)}
-.stake b{color:var(--ink);white-space:nowrap}
+.src{font-size:13px;color:var(--mute);margin:10px 0 0}
+footer{border-top:1px solid var(--line);font-size:14px;color:var(--mute)}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 16px;padding-block:20px calc(20px + env(safe-area-inset-bottom,0px))}
+
+/* tablet és afölött */
+@media(min-width:601px){
+.hd{height:64px}
+.brand{font-size:17px}
+#navPlay{display:inline-block}
+nav button{padding:10px 14px;font-size:15px}
+.lead{font-size:17px;margin-top:24px}
+.btn{padding:0 28px}
+.row{gap:12px}
+.row>.btn{flex:none}
+.save .row>.btn,.sh .row>.btn{flex:1}
+.facts{gap:20px}
+.facts dd{white-space:nowrap;font-size:clamp(17px,2vw,22px)}
+.lad-card{border-radius:28px;padding:14px}
+.ladder li{padding:7px 16px;gap:12px;grid-template-columns:2.4em minmax(0,1fr) auto}
+.sec{padding-block:clamp(32px,6vh,72px)}
+.lvgrid{grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px;margin-top:36px}
+.lvb{padding:18px 18px 16px;border-radius:20px}
+.lvb b{font-size:36px}
+.gbar{padding-block:18px}
+.gmeta{gap:18px;font-size:15px}
+.answers{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ans{min-height:72px;font-size:17px;border-radius:20px;padding:12px 18px 12px 14px;gap:14px;grid-template-columns:36px minmax(0,1fr) auto}
+.ans .lt{width:36px;height:36px}
+.ans:hover:not(:disabled){transform:translateY(-2px)}
+.qcard{padding-bottom:28px}
+.cat{margin-bottom:16px}
+.life{margin-top:22px}
+.lbtn{flex:none;padding:0 20px}
+.lbtn .lg{display:inline}
+kbd{display:inline}
+.sheet{place-items:center;padding:16px}
+.sh{width:min(460px,100%);border-radius:28px;padding:28px}
+.sh h3{font-size:28px}
+.save{border-radius:28px;padding:24px}
+.big{white-space:nowrap;font-size:clamp(48px,9vw,120px)}
+table{font-size:16px}
+th{padding:10px 12px}
+td{padding:16px 12px}
+td.rk{width:3em}
+.empty{border-radius:28px;padding:48px 24px}
 }
-@media(max-width:600px){
-.hd{height:56px}
-.brand{font-size:15px}
-#navPlay{display:none}
-nav button{padding:10px 12px;font-size:14px}
-.facts dd{white-space:normal}
-.lbtn .lg{display:none}
-.answers{grid-template-columns:minmax(0,1fr);gap:8px}
-.ans{min-height:58px;font-size:16px;border-radius:16px;padding:8px 14px 8px 10px;gap:12px}
-.ans .lt{width:32px;height:32px}
-.ans{grid-template-columns:32px minmax(0,1fr) auto}
-.qcard{padding-bottom:16px}
-.gbar{padding-block:12px}
-.gmeta{gap:12px;font-size:14px}
-.life{margin-top:14px}
-.lbtn{flex:1;justify-content:center;padding:0 12px}
-.lbtn kbd,.xbtn kbd{display:none}
-.facts{gap:12px}
-.sheet{place-items:end center;padding:0}
-.sh{border-radius:28px 28px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));width:100%}
-.home .row>.btn{flex:1}
-th,td{padding:12px 6px}
-table{font-size:14px}
-.big{white-space:normal}
+
+/* asztali gép */
+@media(min-width:861px){
+h1{font-size:clamp(44px,6.2vw,92px)}
+h1 .mask>span{white-space:nowrap}
+.home{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(32px,6vw,96px);align-items:center;padding-block:clamp(36px,7vh,88px)}
+.home .row{margin-top:36px}
+.facts{margin-top:48px;padding-top:24px}
+.ladder li.top .v{font-size:clamp(20px,2.4vw,30px)}
+.side .ladder li.top .v{font-size:22px}
+.side .ladder li{padding:6px 12px}
+.strip{display:none}
+.ggrid{grid-template-columns:minmax(0,1fr) 320px;gap:clamp(24px,4vw,56px);padding-block:clamp(20px,4vh,44px)}
+.side{display:block;position:sticky;top:84px;align-self:start}
+.res{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(28px,5vw,80px);align-items:end;padding-block:clamp(36px,8vh,96px)}
 }
 @media(prefers-reduced-motion:reduce){
 *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0ms!important;transition-duration:.01ms!important;transition-delay:0ms!important}
@@ -283,7 +323,7 @@ table{font-size:14px}
           <label for="nev">Felveszi az eredményét a dicsőséglistára?</label>
           <input id="nev" name="nev" maxlength="20" autocomplete="nickname" placeholder="Játékosnév">
           <div class="row"><button type="button" class="btn ghost" id="noSave">Nem, köszönöm</button><button class="btn" type="submit">Felveszem</button></div>
-          <p class="note" id="saveNote">Legfeljebb 20 karakter. Az eredmény ebben a böngészőben marad.</p>
+          <p class="note" id="saveNote"></p>
         </form>
         <div class="save" id="noPrize" hidden>
           <p style="margin:0 0 16px">Nyeremény nélkül nem kerül fel a dicsőséglistára.</p>
@@ -296,7 +336,8 @@ table{font-size:14px}
   <section class="view" id="v-board">
     <div class="wrap sec">
       <h2><span class="mask"><span>Dicsőséglista</span></span></h2>
-      <p class="lead">Nehézségi szint, nyeremény, végül játékidő szerint rendezve. Az eredményeket ez a böngésző tárolja.</p>
+      <p class="lead">Nehézségi szint, nyeremény, végül játékidő szerint rendezve.</p>
+      <p class="src" id="bSrc"></p>
       <div id="bl"></div>
       <div class="row" style="margin-top:32px"><button class="btn" id="bPlay">Új játék</button><button class="btn ghost" id="bHome">Főmenü</button></div>
     </div>
@@ -312,6 +353,12 @@ table{font-size:14px}
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
 const T=[10000,20000,50000,100000,250000,500000,750000,1000000,1500000,2000000,5000000,10000000,15000000,25000000,50000000];
+/* KÖZÖS DICSŐSÉGLISTA (Supabase)
+   Töltsd ki a projekt URL-jével és a publishable kulccsal (sb_publishable_...).
+   Ha üresen marad, a lista csak az adott böngészőben tárolódik. */
+const SB_URL='';
+const SB_KEY='';
+const SHARED=!!(SB_URL&&SB_KEY);
 const N=15,L='ABCD',LS='loim-toplista';
 let Q=null,st={v:'home'},timers=[],tick=null,sheetMode=null;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -460,7 +507,8 @@ function finish(kind){
   $('#rMeta').innerHTML=`<span>Szint<b>${st.lv}</b></span><span>Helyes válasz<b>${good} / 15</b></span><span>Játékidő<b>${mmss(st.secs)}</b></span>`;
   const has=st.prize>0;
   $('#saveForm').hidden=!has;$('#noPrize').hidden=has;
-  $('#nev').value='';$('#saveNote').textContent='Legfeljebb 20 karakter. Az eredmény ebben a böngészőben marad.';
+  $('#nev').value='';$('#saveNote').textContent=NOTE;
+  const sb=$('#saveForm button[type=submit]');sb.disabled=false;sb.textContent='Felveszem';
   show('result');
   if(has&&matchMedia('(min-width:861px)').matches)later(()=>$('#nev').focus({preventScroll:true}),700);
 }
@@ -476,24 +524,49 @@ function insert(list,u){
   }
   list.splice(idx,0,u);return idx;
 }
-function save(e){
+const NOTE=SHARED?'Legfeljebb 20 karakter. A közös listára kerül, mindenki látja.':'Legfeljebb 20 karakter. Az eredmény ebben a böngészőben marad.';
+const SRC=SHARED?'Közös lista: mindenki eredménye itt van, aki valaha játszott vele.':'Ez a lista csak ebben a böngészőben tárolódik.';
+const H=()=>({apikey:SB_KEY,'Content-Type':'application/json'});
+async function fetchLB(){
+  if(!SHARED)return loadLB();
+  const r=await fetch(SB_URL+'/rest/v1/toplista?select=id,nev,szint,ido,nyeremeny&order=szint.desc,nyeremeny.desc,ido.asc,id.asc&limit=100',{headers:H()});
+  if(!r.ok)throw new Error(r.status);
+  return (await r.json()).map(x=>({id:x.id,n:x.nev,lv:x.szint,m:Math.floor(x.ido/60),s:x.ido%60,p:x.nyeremeny}));
+}
+async function addLB(u){
+  if(!SHARED){const l=loadLB();const i=insert(l,u);if(!saveLB(l))throw new Error('storage');return {list:l,hi:i}}
+  const r=await fetch(SB_URL+'/rest/v1/toplista',{method:'POST',headers:{...H(),Prefer:'return=representation'},body:JSON.stringify({nev:u.n,szint:u.lv,ido:u.m*60+u.s,nyeremeny:u.p})});
+  if(!r.ok)throw new Error(r.status);
+  const row=(await r.json())[0];
+  const list=await fetchLB();
+  return {list,hi:list.findIndex(x=>x.id===row.id)};
+}
+async function save(e){
   e.preventDefault();
   const n=$('#nev').value.trim().slice(0,20);
   if(!n){$('#saveNote').textContent='Adjon meg egy játékosnevet.';$('#nev').focus();return}
-  const list=loadLB();
-  const idx=insert(list,{n,lv:st.lv,m:Math.floor(st.secs/60),s:st.secs%60,p:st.prize});
-  const ok=saveLB(list);
-  renderBoard(list,idx,ok);show('board');
+  const b=$('#saveForm button[type=submit]');b.disabled=true;b.textContent='Mentés…';
+  try{
+    const {list,hi}=await addLB({n,lv:st.lv,m:Math.floor(st.secs/60),s:st.secs%60,p:st.prize});
+    st={v:'board',justSaved:true};renderBoard(list,hi);show('board');
+  }catch(err){
+    b.disabled=false;b.textContent='Újrapróbálom';
+    $('#saveNote').textContent='Nem sikerült menteni, ellenőrizze a netkapcsolatot, és próbálja újra.';
+  }
 }
-function renderBoard(list,hi=-1,ok=true){
-  list=list||loadLB();
-  if(!list.length){$('#bl').innerHTML='<div class="empty">A dicsőséglista még üres.</div>';return}
-  $('#bl').innerHTML=(ok?'':'<p class="err">Ez a böngésző nem engedi a mentést, az eredmény csak most látszik.</p>')+
-  `<div class="tbl"><table><thead><tr><th>#</th><th>Játékos</th><th class="r">Szint</th><th class="r">Idő</th><th class="r">Nyeremény</th></tr></thead><tbody>${
+function renderBoard(list,hi=-1){
+  $('#bSrc').textContent=SRC;
+  if(!list.length){$('#bl').innerHTML='<div class="empty">A dicsőséglista még üres. Legyen Ön az első!</div>';return}
+  $('#bl').innerHTML=`<div class="tbl"><table><thead><tr><th>#</th><th>Játékos</th><th class="r">Szint</th><th class="r">Idő</th><th class="r">Nyeremény</th></tr></thead><tbody>${
     list.map((r,i)=>`<tr class="${i===hi?'me':''}" style="--d:${Math.min(i,20)*40}ms"><td class="rk">${i+1}.</td><td class="nm">${esc(r.n)}</td><td class="r">${r.lv}</td><td class="r">${mmss(r.m*60+r.s)}</td><td class="r"><b>${ft(r.p)}</b></td></tr>`).join('')
-  }</tbody></table></div>`;
+  }</tbody></table></div>`+(SHARED&&hi<0&&st.justSaved?'<p class="note">Az eredménye elmentve, de most nem fért be a legjobb 100 közé.</p>':'');
 }
-function openBoard(){clearT();stopTick();st={v:'board'};renderBoard();show('board')}
+async function openBoard(){
+  clearT();stopTick();st={v:'board'};
+  $('#bSrc').textContent=SRC;$('#bl').innerHTML='<div class="empty">Betöltés…</div>';show('board');
+  try{const l=await fetchLB();if(st.v==='board')renderBoard(l)}
+  catch(err){if(st.v==='board')$('#bl').innerHTML='<div class="empty">A dicsőséglista most nem érhető el. Ellenőrizze a netkapcsolatot.</div>'}
+}
 
 /* események */
 $('#play').onclick=newGame;$('#navPlay').onclick=newGame;$('#bPlay').onclick=newGame;$('#rAgain').onclick=newGame;
